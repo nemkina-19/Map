@@ -4,10 +4,10 @@ import sys
 import pygame
 import requests
 
-#print('Введите координаты в одну строку, например, 36.67 42.57:')
-x, y = 60.01, 29.71 #list(map(float, input().split()))
-#print('Введите масштаб:')
-masshtab = 8 #int(input())
+print('Введите координаты в одну строку, например, 36.67 42.57:')
+x, y = list(map(float, input().split()))
+print('Введите масштаб:')
+masshtab = int(input())
 map_request = f"http://static-maps.yandex.ru/1.x/?ll={y},{x}&z={masshtab}&l=map&size=650,450"
 response = requests.get(map_request)
 
