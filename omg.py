@@ -4,11 +4,11 @@ import sys
 import pygame
 import requests
 
-print('Введите координаты в одну строку, например, 36.67 42.57:')
-x, y = list(map(float, input().split()))
-print('Введите масштаб:')
-masshtab = int(input())
-map_request = f"http://static-maps.yandex.ru/1.x/?ll={y},{x}&spn={masshtab},{masshtab}&l=sat"
+#print('Введите координаты в одну строку, например, 36.67 42.57:')
+x, y = 60.01, 29.71 #list(map(float, input().split()))
+#print('Введите масштаб:')
+masshtab = 8 #int(input())
+map_request = f"http://static-maps.yandex.ru/1.x/?ll={y},{x}&z={masshtab}&l=map&size=650,450"
 response = requests.get(map_request)
 
 if not response:
@@ -24,7 +24,7 @@ with open(map_file, "wb") as file:
 
 # Инициализируем pygame
 pygame.init()
-screen = pygame.display.set_mode((600, 450))
+screen = pygame.display.set_mode((650, 450))
 # Рисуем картинку, загружаемую из только что созданного файла.
 screen.blit(pygame.image.load(map_file), (0, 0))
 # Переключаем экран и ждем закрытия окна.
