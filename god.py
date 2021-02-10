@@ -57,9 +57,7 @@ while running:
                 map_write()
             if event.key == pygame.K_LEFT:
                 y_1 = 360 / (math.pow(2, ZOOM + y))
-                print(y)
                 y -= 450 * y_1 * 10 ** 6.72
-                print(y)
                 map_write()
             if event.key == pygame.K_RIGHT:
                 y_1 = 360 / (math.pow(2, ZOOM + y))
