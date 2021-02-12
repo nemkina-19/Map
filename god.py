@@ -7,7 +7,9 @@ import requests
 ZOOM = 17
 MODE = 'map'
 x, y = 59.9386, 30.3141
+xc, yc = 59.9386, 30.3141
 TXT = 0
+geoflag = False
 
 
 # отрисовка кнопки
@@ -27,6 +29,11 @@ def draw(screen, x, y, btn_size_x, btn_size_y, text, search=False):
 def geoXY(request):
     response = requests.get(request)
     # Пример \\\\\\   Красная пл-дь, 1
+    if not response:
+        print("Ошибка выполнения запроса:")
+        print(request)
+        print("Http статус:", response.status_code, "(", response.reason, ")")
+        return False
     json_response = response.json()
     toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
     toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"]
@@ -37,6 +44,8 @@ def geoXY(request):
 def map_write():
     map_file = "map.png"
     map_request = f"https://static-maps.yandex.ru/1.x/?ll={y},{x}&z={ZOOM}&size=450,450&l={MODE}"
+    if geoflag:
+        map_request = f"https://static-maps.yandex.ru/1.x/?ll={y},{x}&z={ZOOM}&size=450,450&l={MODE}&pt={yc},{xc},pm2rdm"
     response = requests.get(map_request)
 
     if not response:
@@ -99,12 +108,17 @@ while running:
                 search = False
             elif btn_search_x <= event.pos[0] <= btn_search_x + btn_search_size_x and btn_search_y <= event.pos[1] <= \
                     btn_search_y + btn_search_size_y:
-                y, x = geoXY(f"http://geocode-maps.yandex.ru/1.x/?apikey=40d16"
-                            f"49f-0493-4b70-98ba-98533de7710b&geocode={search_txt}&format=json").split()
-                y = float(y)
-                x = float(x)
-                search_txt = ''
-                map_write()
+                b = geoXY(f"http://geocode-maps.yandex.ru/1.x/?apikey=40d16"
+                            f"49f-0493-4b70-98ba-98533de7710b&geocode={search_txt}&format=json")
+                if b:
+                    y, x = b.split()
+                    geoflag = True
+                    yc = float(y)
+                    xc = float(x)
+                    y = yc
+                    x = xc
+                    search_txt = ''
+                    map_write()
                 search = False
             elif table_x <= event.pos[0] <= table_x + table_size_x \
                     and table_y <= event.pos[1] <= table_y + table_size_y:
