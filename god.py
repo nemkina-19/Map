@@ -25,7 +25,13 @@ def draw(screen, x, y, btn_size_x, btn_size_y, text, search=False):
 
 
 def geoXY(request):
-    pass
+    response = requests.get(request)
+    # Пример \\\\\\   Красная пл-дь, 1
+    json_response = response.json()
+    toponym = json_response["response"]["GeoObjectCollection"]["featureMember"][0]["GeoObject"]
+    toponym_address = toponym["metaDataProperty"]["GeocoderMetaData"]["text"]
+    toponym_coodrinates = toponym["Point"]["pos"]
+    return toponym["Point"]["pos"]
 
 
 def map_write():
@@ -91,9 +97,13 @@ while running:
                 MODE = 'sat,skl'
                 map_write()
                 search = False
-            elif btn_3x <= event.pos[0] <= btn_3x + btn_size_x and btn_3y <= event.pos[1] <= btn_3y + btn_size_y:
+            elif btn_search_x <= event.pos[0] <= btn_search_x + btn_search_size_x and btn_search_y <= event.pos[1] <= \
+                    btn_search_y + btn_search_size_y:
+                y, x = geoXY(f"http://geocode-maps.yandex.ru/1.x/?apikey=40d16"
+                            f"49f-0493-4b70-98ba-98533de7710b&geocode={search_txt}&format=json").split()
+                y = float(y)
+                x = float(x)
                 search_txt = ''
-                geoXY(f"http://geocode-maps.yandex.ru/1.x/?apikey=40d1649f-0493-4b70-98ba-98533de7710b&geocode={search_txt}, 1&format=json")
                 map_write()
                 search = False
             elif table_x <= event.pos[0] <= table_x + table_size_x \
@@ -103,6 +113,8 @@ while running:
             if search:
                 search_txt += event.unicode
                 draw(screen, table_x, table_y, table_size_x, table_size_y, search_txt)
+            if search and event.key == pygame.K_BACKSPACE and search_txt:
+                search_txt = search_txt[:-1]
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_PAGEUP:
                 if ZOOM + 1 <= 17:
