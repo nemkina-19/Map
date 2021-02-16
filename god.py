@@ -138,14 +138,13 @@ while running:
                 if ZOOM - 1 >= 0:
                     ZOOM -= 1
                     map_write()
-            # ошибка при большом шасштабе
             if event.key == pygame.K_UP:
                 x_1 = 256 / 2 * math.pi * 2 ** ZOOM * (math.pi + math.radians(y))
-                x += (450 * x_1 / 10 ** 8) / 10 ** 5.55
+                x += 450 * x_1 / 10 ** (13.5 - 0.6 * (17 - ZOOM))
                 map_write()
             if event.key == pygame.K_DOWN:
                 x_1 = 256 / 2 * math.pi * 2 ** ZOOM * (math.pi + math.radians(y))
-                x -= (450 * x_1 / 10 ** 8) / 10 ** 5.55
+                x -= 450 * x_1 / 10 ** (13.5 - 0.6 * (17 - ZOOM))
                 map_write()
             if event.key == pygame.K_LEFT:
                 y_1 = 360 / (math.pow(2, ZOOM + y))
